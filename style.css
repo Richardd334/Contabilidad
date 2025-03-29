@@ -1,0 +1,85 @@
+h1{
+  text-align: center;
+  background-color: rgb(19, 2, 36);
+  color: antiquewhite;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  width: 49%;
+}
+h2{
+  height: 10%;
+  width: 40%;
+}
+
+table, th, td {
+  border:1px solid black;
+  
+  /* background-color: rgb(218, 136, 150); */
+    
+}
+thead{
+  background-color: rgb(218, 136, 150);
+  text-align: center;
+}
+tbody{
+  border:1px solid black;
+  background-color: aliceblue;
+  /* background-color: rgb(238, 212, 162); */
+}
+tfoot{
+  background-color: aliceblue;
+}
+div{
+  justify-content: center;
+  width: 50%;
+}
+#tablaIngresar{
+  background-color: rgb(255, 255, 255);
+}
+body {
+  /* display: flex; */
+  /* justify-content: center;  */
+  align-items: center; 
+  height: 100vh;
+  margin: 100;
+  padding-left: 200px;
+  padding-top: 100px;
+  background-color: #ffc4f7;
+}
+div.Cuerpo{
+  display: inline-block;
+  background-color: rgb(211, 0, 183);
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+aside {
+  width: 30%;
+  padding-left: 15px;
+  margin-left: 15px;
+  float: right;
+  font-style: italic;
+  background-color: lightgray;
+}
+main{
+  width: 50%;
+  padding: 20px;
+}
+section{
+  width: 50%;
+}
+#cuentas{
+  margin-left: 50px;
+  background-color: rgb(255, 130, 130);
+  align-items: center;
+  padding: 40px;
+  padding-top: 30px;
+}
+.Cuerpo_Seleccion{
+  width: 20%;
+  background-color: rgb(252, 136, 236);
+  padding: 10px;
+}

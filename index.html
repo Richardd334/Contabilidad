@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transacciones</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="actualizarOpcionesSelect('descripcion0')">
+    <h1>Registro de Transacciones Contables</h1>
+    
+    <div class="Cuerpo_Seleccion">
+        <h2>Tipo de transacción</h2>
+        <select name="Tipo" id="Tipo" class="select-transaccion">
+            <option value="Seleccionar">Seleccionar tipo...</option>
+            <option value="Apertura">Apertura</option>
+            <option value="CompraEfectivo">Compra en efectivo</option>
+            <option value="CompraCredito">Compra a crédito</option>
+            <option value="Venta">Venta</option>
+            <option value="Venta">Ajuste</option>
+        </select>
+    </div>
+
+    <main class="Cuerpo">
+        <h2>Detalle de transacción</h2>
+        <div>
+            <table id="tablaIngresar">
+                <thead>
+                    <tr>
+                        <th>Cuenta</th>
+                        <th>Debe (Cargo)</th>
+                        <th>Haber (Abono)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ingresos">
+                    <tr id="0">
+                        <td>
+                            <select name="descripcion" id="descripcion0" class="select-descripcion"></select>
+                        </td>
+                        <td><input type="number" name="debe" id="debe0" step="0.01" min="0"></td>
+                        <td><input type="number" name="haber" id="haber0" step="0.01" min="0"></td>
+                        <td><button class="btn-delete" onclick="eliminarCelda(0)">❌ Eliminar</button></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <button onclick="agregarCelda()">Agregar línea</button>
+                            <button onclick="registrarTransaccion()">Guardar transacción</button>
+                            <button onclick="borrarTodo()" class="btn-delete">Borrar todo</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>            
+        </div>
+
+    </main>
+
+    <aside class="Cuerpo" id="cuentas">
+        <h2>Administración de cuentas</h2>
+        <div>
+            <label for="nombreCuenta"><h3>Nueva cuenta:</h3></label>
+            <input type="text" name="nombreCuenta" id="nombreCuenta" placeholder="Nombre de la nueva cuenta">
+            <button onclick="AgregarCuenta()"> Agregar cuenta</button>
+        </div>
+    </aside>
+
+    <section class="Cuerpo">
+        <h2>Balance General</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Cuenta</th>
+                    <th>Debe</th>
+                    <th>Haber</th>
+                </tr>
+            </thead>
+            <tbody id="TablaTrans"></tbody>
+        </table>
+        
+        <div style="margin-top: 20px;">
+            <p id="Activo"><strong>Total Débitos:</strong> $0.00</p>
+            <p id="Pasivo"><strong>Total Créditos:</strong> $0.00</p>
+            <p id="Capital"><strong>Capital Social:</strong> $0.00</p>
+            <p id="CapContable"><strong>Capital Social:</strong> $0.00</p>
+            <!-- <h3>Total Activo: <span id="TotalActivo">$0.00</span></h3> -->
+            <!-- <h3>Total Pasivo + Capital: <span id="TotalPasivo">$0.00</span></h3> -->
+        </div>
+    </section>
+
+    <div class="Cuerpo" id="Tabla_diario">
+        <h2>Libro Diario</h2>
+        <p>Registro cronológico de transacciones</p>
+    </div>
+
+    <div class="Cuerpo" id="balance-comprobacion">
+        <h2>Balance de Comprobación</h2>
+        <table id="tablaBalanceComprobacion">
+            <thead>
+                <tr>
+                    <th>Cuenta</th>
+                    <th>Debe</th>
+                    <th>Haber</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoBalanceComprobacion"></tbody>
+            <tfoot>
+                <tr class="totales">
+                    <th>Total</th>
+                    <th id="totalDebe">$0.00</th>
+                    <th id="totalHaber">$0.00</th>
+                </tr>
+                <tr>
+                    <td colspan="3" id="resultadoBalance"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="Cuerpo" id="libro-mayor">
+        <h2>Libro Mayor</h2>
+        <div class="controles-mayor">
+            <label for="selectCuenta">Seleccionar cuenta:</label>
+            <select id="selectCuenta" onchange="cargarLibroMayor()">
+                <option value="">-- Todas las cuentas --</option>
+            </select>
+            <button onclick="generarLibroMayorCompleto()">Mostrar todas</button>
+        </div>
+        <div id="contenedor-mayor"></div>
+    </div>
+    <div>
+        <table id="estadoCapital"></table>
+    </div>
+
+
+    <div class="Cuerpo" id="estado-cambios-capital">
+        <h2>Estado de Cambios en el Capital Contable</h2>
+        <table id="tablaCambiosCapital">
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Capital Contable</th>
+                </tr>
+            </thead>
+            <tbody id="Estado capital"></tbody>
+
+            <tfoot id="Disminucion">
+                <!-- <tr>
+                    <th>Capital Contable Final</th>
+                    <th id="capitalFinal">$0.00</th>
+                </tr> -->
+            </tfoot>
+        </table>
+        <h3 id="IncrementoNeto">Incremento neto=</h3>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
