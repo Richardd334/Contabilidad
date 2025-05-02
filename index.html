@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transacciones</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="actualizarOpcionesSelect('descripcion0')">
+    <h1>Registro de Transacciones Contables</h1>
+    
+    <div class="Cuerpo_Seleccion">
+        <h2>Tipo de transacción</h2>
+        <select name="Tipo" id="Tipo" class="select-transaccion">
+            <option value="Seleccionar">Seleccionar tipo...</option>
+            <option value="Apertura">Apertura</option>
+            <option value="CompraEfectivo">Compra en efectivo</option>
+            <option value="CompraCredito">Compra a crédito</option>
+            <option value="Venta">Venta</option>
+            <option value="Venta">Ajuste</option>
+        </select>
+    </div>
+
+    <main class="Cuerpo">
+        <h2>Detalle de transacción</h2>
+        <div>
+            <table id="tablaIngresar">
+                <thead>
+                    <tr>
+                        <th>Cuenta</th>
+                        <th>Debe (Cargo)</th>
+                        <th>Haber (Abono)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ingresos">
+                    <tr id="0">
+                        <td>
+                            <select name="descripcion" id="descripcion0" class="select-descripcion"></select>
+                        </td>
+                        <td><input type="number" name="debe" id="debe0" step="0.01" min="0"></td>
+                        <td><input type="number" name="haber" id="haber0" step="0.01" min="0"></td>
+                        <td><button class="btn-delete" onclick="eliminarCelda(0)">Eliminar</button></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <button onclick="agregarCelda()">Agregar línea</button>
+                            <button onclick="registrarTransaccion()">Guardar transacción</button>
+                            <button onclick="borrarTodo()" class="btn-delete">Borrar todo</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>            
+        </div>
+
+    </main>
+
+    <aside class="Cuerpo" id="cuentas">
+        <h2>Administración de cuentas</h2>
+        <div>
+            <label for="nombreCuenta"><h3>Nueva cuenta:</h3></label>
+            <input type="text" name="nombreCuenta" id="nombreCuenta" placeholder="Nombre de la nueva cuenta">
+            <button onclick="AgregarCuenta()"> Agregar cuenta</button>
+        </div>
+    </aside>
+
+    <section class="Cuerpo" id="BalanceGeneral">
+        <h2>Balance General</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Cuenta</th>
+                    <th>Debe</th>
+                    <th>Haber</th>
+                </tr>
+            </thead>
+            <tbody id="TablaTrans"></tbody>
+        </table>
+        
+        <div style="margin-top: 20px;">
+            <p id="Activo"><strong>Total Débitos:</strong> $0.00</p>
+            <p id="Pasivo"><strong>Total Créditos:</strong> $0.00</p>
+            <p id="Capital"><strong>Capital Social:</strong> $0.00</p>
+            <p id="CapContable"><strong>Capital Social:</strong> $0.00</p>
+            <!-- <h3>Total Activo: <span id="TotalActivo">$0.00</span></h3> -->
+            <!-- <h3>Total Pasivo + Capital: <span id="TotalPasivo">$0.00</span></h3> -->
+        </div>
+    </section>
+
+    <div class="Cuerpo" id="Tabla_diario">
+        <h2>Libro Diario</h2>
+        <p>Registro cronológico de transacciones</p>
+    </div>
+
+    <div class="Cuerpo" id="balance-comprobacion">
+        <h2>Balance de Comprobación</h2>
+        <table id="tablaBalanceComprobacion">
+            <thead>
+                <tr>
+                    <th>Cuenta</th>
+                    <th>Debe</th>
+                    <th>Haber</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoBalanceComprobacion"></tbody>
+            <tfoot>
+                <tr class="totales">
+                    <th>Total</th>
+                    <th id="totalDebe">$0.00</th>
+                    <th id="totalHaber">$0.00</th>
+                </tr>
+                <tr>
+                    <td colspan="3" id="resultadoBalance"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="Cuerpo" id="libro-mayor">
+        <h2>Libro Mayor</h2>
+        <div class="controles-mayor">
+            <label for="selectCuenta">Seleccionar cuenta:</label>
+            <select id="selectCuenta" onchange="cargarLibroMayor()">
+                <option value="">-- Todas las cuentas --</option>
+            </select>
+            <button onclick="generarLibroMayorCompleto()">Mostrar todas</button>
+        </div>
+        <div id="contenedor-mayor"></div>
+    </div>
+    <div>
+        <table id="estadoCapital"></table>
+    </div>
+
+
+    <div class="Cuerpo" id="estado-cambios-capital">
+        <h2>Estado de Cambios en el Capital Contable</h2>
+        <table id="tablaCambiosCapital">
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Capital Contable</th>
+                </tr>
+            </thead>
+            <tbody id="Estado capital"></tbody>
+
+            <tfoot id="Disminucion">
+                <!-- <tr>
+                    <th>Capital Contable Final</th>
+                    <th id="capitalFinal">$0.00</th>
+                </tr> -->
+            </tfoot>
+        </table>
+        <h3 id="IncrementoNeto">Incremento neto=</h3>
+    </div>
+
+    
+    <div class="Cuerpo">
+        <h2>Arqueo de caja</h2>
+        <table id="Caja">
+            <thead>
+                <tr>
+                    <th>Monedas</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <!-- <th>Acciones</th> -->
+                </tr>
+            </thead>
+            <tbody id="Monedas">
+                <tr>
+                    <td>$0.50</td>
+                    <td><input type="number" name="haber" id="m0" step="1" min="0"></td>
+
+                    <td id="t0"></td>
+                </tr>
+                <tr>
+                    <td>$1.00</td>
+                    <td><input type="number" name="haber" id="m1" step="1" min="0"></td>
+
+                    <td id="t1"></td>
+                </tr>
+                <tr>
+                    <td>$2.00</td>
+                    <td><input type="number" name="haber" id="m2" step="1" min="0"></td>
+
+                    <td id="t2"></td>
+                </tr>
+                <tr>
+                    <td>$5.00</td>
+                    <td><input type="number" name="haber" id="m5" step="1" min="0"></td>
+
+                    <td id="t5"></td>
+                </tr>
+                <tr>
+                    <td>$10.00</td>
+                    <td><input type="number" name="haber" id="m10" step="1" min="0"></td>
+
+                    <td id="t10"></td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td></td>
+                    <td id="Total_mo"></td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Billetes</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <!-- <th>Acciones</th> -->
+                </tr>
+            </thead>
+            <tbody id="billetes">
+                <tr>
+                    <td>$20.00</td>
+                    <td><input type="number" name="haber" id="20" step="1" min="0"></td>
+                    <td id="b20"></td>
+                </tr>
+                <tr>
+                    <td>$50.00</td>
+                    <td><input type="number" name="haber" id="50" step="1" min="0"></td>
+                    <td id="b50"></td>
+                </tr>
+                <tr>
+                    <td>$100.00</td>
+                    <td><input type="number" name="haber" id="100" step="1" min="0"></td>
+                    <td id="b100"></td>
+                </tr>
+                <tr>
+                    <td>$200.00</td>
+                    <td><input type="number" name="haber" id="200" step="1" min="0"></td>
+                    <td id="b200"></td>
+                </tr>
+                <tr>
+                    <td>$500.00</td>
+                    <td><input type="number" name="haber" id="500" step="1" min="0"></td>
+                    <td id="b500"></td>
+                </tr>
+                <tr>
+                    <td>$1000.00</td>
+                    <td><input type="number" name="haber" id="1000" step="1" min="0"></td>
+                    <td id="b1000"></td>
+                </tr>
+
+                <tr>
+                    <td>Total</td>
+                    <td></td>
+                    <td id="Total_bi"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <button onclick="ActualizarCaja()">Actualizar</button>
+                        
+                        <button onclick="borrarTodo()" class="btn-delete">Borrar todo</button>
+                    </td>
+                </tr>
+            </tfoot>
+            <tfoot>
+                <tr>
+                    <td>Total caja</td>
+                    <td></td>
+                    <td id="Total_caja"></td>
+                </tr>
+            </tfoot>
+        </table>            
+    </div>
+
+    <div class="Cuerpo">
+        <h2>Estado de resultado Analítico</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Cuenta</th>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                </tr>
+            </thead>
+            <tbody id="TablaRes">
+                <tr>
+                    <td>Ventas Totales</td>
+                    <td></td>
+                    <td></td>
+                    <td id="VentaTotal"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Dev sobre Ventas</td>
+                    <td></td>
+                    <td id="DevVenta"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Reb sobre Ventas</td>
+                    <td></td>
+                    <td id="RebVenta"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Desc sobre Ventas</td>
+                    <td></td>
+                    <td id="DesVenta"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- ventas Netas -->
+                <tr>
+                    <th>Ventas Netas</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th id="VenNetas"></th>
+                </tr>
+                <!-- compsa-->
+                <tr>
+                    <td>Inventario Inicial</td>
+                    <td></td>
+                    <td></td>
+                    <td id="InvInicial"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Compras</td>
+                    <td id="Comp"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Gastos de compras</td>
+                    <td id="GastoCompra"></td>
+                    <td ></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <!--Compras total-->
+                <tr>
+                    <th>Compras Totales</th>
+                    <th></th>
+                    <th id="CompraTotal"></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+
+                <!--nose-->
+                <tr>
+                    <td>Dev sobre compras</td>
+                    <td id="DevCompra"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Reb sobre compras</td>
+                    <td id="RebCompra"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Desc sobre compras</td>
+                    <td id="DescCompra"></td>
+                    <td ></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!--Compras netas-->
+                <tr>
+                    <th>Compras Netas</th>
+                    <th></th>
+                    <th ></th>
+                    <th id="CompraNeta"></th>
+                    <th></th>
+                </tr>
+                <!--Mercancia disp-->
+                <tr>
+                    <th>Mercancia Disponible</th>
+                    <th></th>
+                    <th ></th>
+                    <th id="MercDisp"></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>Inventario Final</td>
+                    <td ></td>
+                    <td ></td>
+                    <td id="invFinal"></td>
+                    <td></td>
+                </tr>
+                <!--costo ventas-->
+                <tr>
+                    <th>Costo de Ventas</th>
+                    <th></th>
+                    <th ></th>
+                    <th ></th>
+                    <th id="CostoVentas"></th>
+                </tr>
+                <tr>
+                    <th>Utilidad/Perdida Bruta</th>
+                    <th></th>
+                    <th ></th>
+                    <th ></th>
+                    <th id="Utper"></th>
+                </tr>
+
+                <tr>
+                    <td>Gasto de Administración</td>
+                    <td ></td>
+                    <td ></td>
+                    <td ></td>
+                    <td id="admin"></td>
+                </tr>
+
+                <tr>
+                    <th>Utilidad de operación</th>
+                    <th></th>
+                    <th ></th>
+                    <th ></th>
+                    <th id="Util"></th>
+                </tr>
+
+                
+
+
+            </tbody>
+            
+        </table>
+        <h3 id="Conclusion">---</h3>
+    </div>
+
+    <script>
+        
+    </script>
+    
+
+    
+
+    <script src="script.js" defer></script>
+    <script src="arqueo.js" defer></script>
+</body>
+</html>
